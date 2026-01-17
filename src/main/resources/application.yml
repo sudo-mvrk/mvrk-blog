@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: "mvrk-blog"
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/mvrk_blog_db"
+    username: postgres
+    password: 12345password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+jwt:
+  secret: 81590bd97d1a64144d95c91db5fb7aa93c48a19f01fefdfd7836ddbd9d1e0eb2
+  lifetime: PT1H30M
+application:
+  admin:
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:admin}
+    email: ${ADMIN_EMAIL:admin@blog.com}
+    nickname: ${NICKNAME}

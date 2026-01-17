@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  postgres-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345password
+      POSTGRES_DB: mvrk_blog_db
+    ports:
+      - "5432:5432"
