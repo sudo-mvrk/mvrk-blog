@@ -1,5 +1,6 @@
 package dev.mvrk.blog.entity;
 
+import dev.mvrk.blog.entity.enums.AuthProvider;
 import dev.mvrk.blog.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,7 +8,9 @@ import lombok.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_provider_user", columnList = "authProvider, providerId")
+})
 @Getter
 @Setter
 @ToString
@@ -20,8 +23,12 @@ public class User extends BaseEntity {
     private Long id;
     @Column(name = "username", nullable = false, unique = true)
     private String username;
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
+    @Column(name = "authProvider")
+    private AuthProvider authProvider;
+    @Column(name = "providerId", unique = true)
+    private String providerId;
     private String nickname;
     @Column(unique = true)
     private String email;

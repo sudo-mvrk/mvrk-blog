@@ -4,6 +4,7 @@ import dev.mvrk.blog.dto.request.AdminUserUpdateDto;
 import dev.mvrk.blog.dto.request.ProfileUpdateRequestDto;
 import dev.mvrk.blog.dto.request.RegistrationRequestDto;
 import dev.mvrk.blog.entity.User;
+import dev.mvrk.blog.entity.enums.AuthProvider;
 import dev.mvrk.blog.entity.enums.Role;
 import dev.mvrk.blog.exception.UserAlreadyExistsException;
 import dev.mvrk.blog.exception.UserNotFoundException;
@@ -41,6 +42,7 @@ public class UserService {
                 .username(registrationRequestDto.username())
                 .password(passwordEncoder.encode(registrationRequestDto.password()))
                 .email(registrationRequestDto.email())
+                .authProvider(AuthProvider.LOCAL)
                 .role(new HashSet<>(Set.of(Role.ROLE_USER)))
                 .build();
         return userRepository.save(user);

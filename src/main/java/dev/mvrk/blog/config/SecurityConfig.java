@@ -1,6 +1,7 @@
 package dev.mvrk.blog.config;
 
 import dev.mvrk.blog.security.jwt.JwtTokenFilter;
+import dev.mvrk.blog.security.oauth2.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,16 +24,37 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
+    private static final String[] PUBLIC_LOGIN_AND_API = {
+            "/oauth2/**",
+            "/login/**",
+            "/api/auth/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
+
+    private static final String[] PUBLIC_GET_URLS = {
+            "/api/posts/**",
+            "/api/comments/**",
+            "/api/users/{id}"
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/comments**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(PUBLIC_LOGIN_AND_API).permitAll()
+                        .requestMatchers("/api/users/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_URLS).permitAll()
+
+                        .requestMatchers("/api/posts/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oAuth2LoginSuccessHandler))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement(sessionManagement ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

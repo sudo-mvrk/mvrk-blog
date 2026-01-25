@@ -1,6 +1,7 @@
 package dev.mvrk.blog.init;
 
 import dev.mvrk.blog.entity.User;
+import dev.mvrk.blog.entity.enums.AuthProvider;
 import dev.mvrk.blog.entity.enums.Role;
 import dev.mvrk.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class AdminInitializer implements CommandLineRunner {
             User user = User.builder()
                     .username(adminUsername)
                     .email(adminEmail)
+                    .authProvider(AuthProvider.LOCAL)
                     .password(passwordEncoder.encode(adminPassword))
                     .nickname(nickname)
                     .role(Set.of(Role.ROLE_USER, Role.ROLE_ADMIN))

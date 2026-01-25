@@ -10,6 +10,24 @@ spring:
     hibernate:
       ddl-auto: update
     generate-ddl: true
+    open-in-view: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_OAUTH_ID}
+            client-secret: ${GOOGLE_OAUTH_SECRET}
+            scope: email, profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: Google
+
+          github:
+            client-id: ${GITHUB_OAUTH_ID}
+            client-secret: ${GITHUB_OAUTH_SECRET}
+            scope: user:email, read:user
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: GitHub
 jwt:
   secret: 81590bd97d1a64144d95c91db5fb7aa93c48a19f01fefdfd7836ddbd9d1e0eb2
   lifetime: PT1H30M
@@ -19,3 +37,4 @@ application:
     password: ${ADMIN_PASSWORD:admin}
     email: ${ADMIN_EMAIL:admin@blog.com}
     nickname: ${NICKNAME}
+  redirect-uri: http://localhost:5173/oauth2/redirect
