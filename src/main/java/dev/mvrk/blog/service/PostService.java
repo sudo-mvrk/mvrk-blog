@@ -56,9 +56,9 @@ public class PostService {
 
     @Transactional
     public Post updatePost(Long id, PatchPostRequestDto requestDto, String name) {
-        Post post = findPostOrThrow(id);
+        Post post = findPostOrThrowDataNotFoundException(id);
 
-        if (!name.equals(post.getAuthor().getUsername())){
+        if (!name.equals(post.getAuthor().getUsername())) {
             throw new PermissionDeniedException("You are not allowed to change that post");
         }
         updateIfPresent(requestDto.title(), post::setTitle);
@@ -73,16 +73,16 @@ public class PostService {
     }
 
     public Post getPostById(Long id) {
-        return findPostOrThrow(id);
+        return findPostOrThrowDataNotFoundException(id);
     }
 
     @Transactional
     public void deletePostById(Long id) {
-        Post post = findPostOrThrow(id);
+        Post post = findPostOrThrowDataNotFoundException(id);
         postRepository.delete(post);
     }
 
-    private Post findPostOrThrow(Long id) {
+    private Post findPostOrThrowDataNotFoundException(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Post with id " + id + " not found"));
     }
