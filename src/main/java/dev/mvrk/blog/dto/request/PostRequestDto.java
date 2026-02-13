@@ -11,6 +11,5 @@ public record PostRequestDto(
         @Size(min = 3, max = 200, message = "Short description must be between 3 and 200 characters")
         String shortDescription,
         @NotBlank(message = "Content is required")
-        String content,
-        String imageUrl) {
+        String content) {
 }

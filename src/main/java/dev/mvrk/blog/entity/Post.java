@@ -1,5 +1,6 @@
 package dev.mvrk.blog.entity;
 
+import dev.mvrk.blog.entity.enums.PostStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,15 +25,16 @@ public class Post extends BaseEntity {
     private String shortDescription;
     @Lob
     private String content;
-    private String imageUrl;
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @UpdateTimestamp
-    @Column(name = "uodatedAt")
+    @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+    @Enumerated(EnumType.STRING)
+    private PostStatus postStatus;
 }

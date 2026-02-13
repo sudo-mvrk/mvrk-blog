@@ -40,6 +40,13 @@ public class PostController {
         return PostResponseDto.fromEntity(postService.createPost(requestDto, principal.getName()), 0L);
     }
 
+    @PostMapping("/draft")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Long draftPost(Principal principal) {
+        return postService.draftPost(principal.getName());
+    }
+
+
     @PatchMapping("/{id}")
     public PostResponseDto updatePost(@PathVariable Long id,
                                       @RequestBody PatchPostRequestDto requestDto,

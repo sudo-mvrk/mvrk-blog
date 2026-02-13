@@ -4,6 +4,7 @@ import dev.mvrk.blog.dto.request.PatchPostRequestDto;
 import dev.mvrk.blog.dto.request.PostRequestDto;
 import dev.mvrk.blog.entity.Post;
 import dev.mvrk.blog.entity.User;
+import dev.mvrk.blog.entity.enums.PostStatus;
 import dev.mvrk.blog.exception.DataNotFoundException;
 import dev.mvrk.blog.exception.PermissionDeniedException;
 import dev.mvrk.blog.exception.UserNotFoundException;
@@ -25,17 +26,32 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
+    public Long draftPost(String username) {
+        User user = getUserOrThrowUserNotFoundException(username);
+        Post post = Post.builder()
+                .title("Untitled")
+                .author(user)
+                .postStatus(PostStatus.DRAFT)
+                .build();
+        return postRepository.save(post).getId();
+    }
+
+    @Transactional
     public Post createPost(PostRequestDto postRequestDto, String username) {
-        User user = userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = getUserOrThrowUserNotFoundException(username);
         Post post = Post.builder()
                 .title(postRequestDto.title())
                 .shortDescription(postRequestDto.shortDescription())
                 .content(postRequestDto.content())
-                .imageUrl(postRequestDto.imageUrl())
                 .author(user)
+                .postStatus(PostStatus.PUBLISHED)
                 .build();
         return postRepository.save(post);
+    }
+
+    private User getUserOrThrowUserNotFoundException(String username) {
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Transactional
@@ -48,7 +64,7 @@ public class PostService {
         updateIfPresent(requestDto.title(), post::setTitle);
         updateIfPresent(requestDto.shortDescription(), post::setShortDescription);
         updateIfPresent(requestDto.content(), post::setContent);
-        updateIfPresent(requestDto.imageUrl(), post::setImageUrl);
+        post.setPostStatus(PostStatus.PUBLISHED);
         return postRepository.save(post);
     }
 
