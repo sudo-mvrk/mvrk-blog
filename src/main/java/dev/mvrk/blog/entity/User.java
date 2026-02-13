@@ -40,6 +40,7 @@ public class User extends BaseEntity {
     private Boolean isBanned = false;
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Role.class)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Column(nullable = false)
     private Set<Role> role;
 }
